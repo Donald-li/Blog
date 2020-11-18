@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <title>添加文章</title>
+    <link rel="stylesheet" href="../static/css/bootstrap.min.css"/>
+    <link rel="stylesheet" href="../static/css/blog.css" />
+    <link rel="stylesheet" href="../static/css/MarkDown.css" />
+
+</head>
+
+<body style="height: auto">
+    <div class="container" id="container">
+        <div th:insert="BlogType::blogHead"></div>
+        <div th:insert="BlogType::blogNav"></div>
+
+        <div style="height: auto">
+            <button id="getter" class="btn btn-info">保存</button><label id="msg" class="text-info"></label>
+            <form id="uploadImageForm" method="POST" enctype="multipart/form-data" action="/" style="width: 100%" >
+                <table style="width: 100%;margin-top: 5px">
+                    <tr>
+                        <td style="width: 100%"><input id="title" class="input-group-text" type="text" placeholder="请输入标题" style="width: 100%" /></td>
+                    </tr>
+                    <tr>
+                        <td><input id="info" type="text" class="input-group-text" placeholder="请输入简介" style="width: 100%" /></td>
+                    </tr>
+                    <tr>
+
+                        <td>
+                            <label class="col-form-label-sm">插入图片：</label>
+                            <input class="btn btn-info" type="file" name="file" multiple />
+                            <input id="upload" class="btn badge-danger" type="button" value="上传" />
+<!--                            下拉列表，用于选择文章所属包-->
+                            <div class="input-group mb-3" style="margin-top: 5px">
+                                <div class="input-group-prepend">
+                                    <label class="input-group-text" for="inputGroupSelect01">所属的包</label>
+                                </div>
+                                <select class="custom-select" id="inputGroupSelect01">
+                                    <option th:each="package:${packages}" th:value="${package.getPid()}" th:text="${package.getPname()}" >One</option>
+                                </select>
+                            </div>
+                        </td>
+                    </tr>
+                </table>
+            </form>
+            <textarea id="content" class="navbar-text markdown_input" rows="10" onkeyup="run()"></textarea>
+            <div id="targetDiv" class="markdown_output"></div>
+        </div>
+
+    </div>
+    <div th:insert="BlogType::blogFoot" style="position: relative;float: bottom"></div>
+
+<script src="../static/js/showdown.js" th:src="@{../static/js/showdown.js}"></script>
+<script src="../static/js/jquery-3.3.1.min.js"></script>
+<script type="text/javascript">
+    $('#upload').click(function(){
+        $.ajax({
+            url:"/api/",
+            type:"post",
+            data:new FormData(document.getElementById('uploadImageForm')),
+            processData:false,
+            contentType:false,
+            success:function (data) {
+                // 生成图片网址
+                var dataArray = data.split('/');
+                var picName = dataArray[dataArray.length - 1];
+                var picURL = '![' + picName + '](' + data + ')';
+                var imgURL = '<center>\n' +
+                    '<img src="'+data+'" width="80%" height="80%" />\n' +
+                    '</center>';
+
+                // 插入到内容焦点中
+                var text = $('#content').val();
+                var foucsStart = document.getElementById('content').selectionStart;
+                var len = text.length;
+
+                var subStr = '';
+                if (foucsStart == len)
+                    text += '\n\n' + imgURL + '\n\n';
+                else {
+                    subStr = text.substr(foucsStart, 1);
+                    text = text.replace(subStr, '\n\n' + imgURL + '\n\n' + subStr);
+                    console.log(text);
+                }
+
+                $('#content').val(text);
+                run(); // 手动触发 markdown 文字转换
+            },
+            error:function (e) {
+
+            }
+        });
+    });
+
+    //保存按钮获取完成的markdown文本
+    $("#getter").click(function() {
+        $.ajax({
+            url:"/api/getText",
+            type:"get",
+            data:{"pid":$("#inputGroupSelect01 option:selected").val(),
+                  "text":$("#content").val(),
+                  "title":$("#title").val(),
+                  "info":$("#info").val()
+                 },
+            success:function (data) {
+                $("#msg").html(data);
+            },
+            error: function (e) {
+                
+            }
+        });
+    });
+
+    function run() {
+        var text = $('#content').val(),
+            target = document.getElementById('targetDiv'),
+            converter = new showdown.Converter(),
+            html = converter.makeHtml(text);
+
+        target.innerHTML = html;
+    }
+
+    // textarea 自适应高度
+    function makeExpandingArea(el) {
+        var setStyle = function(el) {
+            el.style.height = 'auto';
+            el.style.height = el.scrollHeight + 'px';
+            // console.log(el.scrollHeight);
+        }
+        var delayedResize = function(el) {
+            window.setTimeout(function() {
+                    setStyle(el)
+                },
+                0);
+        }
+        if (el.addEventListener) {
+            el.addEventListener('input', function() {
+                setStyle(el)
+            }, false);
+            setStyle(el)
+        } else if (el.attachEvent) {
+            el.attachEvent('onpropertychange', function() {
+                setStyle(el)
+            });
+            setStyle(el)
+        }
+        if (window.VBArray && window.addEventListener) { //IE9
+            el.attachEvent("onkeydown", function() {
+                var key = window.event.keyCode;
+                if (key == 8 || key == 46) delayedResize(el);
+
+            });
+            el.attachEvent("oncut", function() {
+                delayedResize(el);
+            }); //处理粘贴
+        }
+    }
+    makeExpandingArea(content);
+</script>
+
+</body>
+</html>
