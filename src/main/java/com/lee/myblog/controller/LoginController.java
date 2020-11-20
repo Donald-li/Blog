@@ -31,7 +31,7 @@ public class LoginController {
         if(user!=null&&user.getPassword().equals(password)){
             session.setAttribute("uid",user.getUid());
             session.setAttribute("uname",user.getUname());
-            return "redirect:/toAlist?uid="+user.getUid()+"&&pid=1&&pagenumb=0";
+            return "redirect:/toAlist_1?uid="+user.getUid()+"&&pagenumb=0";
         }else{
             return "index";
         }
