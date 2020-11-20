@@ -35,18 +35,12 @@ public class ArticleController {
     public String addPackage(@RequestParam("pname") String pname,
                              @RequestParam("uid") int uid){
         //以下实现动态添加pid
-        List<Packages> allPackage = packageDao.getAllPackage();
-        List<Integer> ids = new ArrayList<>();
-        int pid = 0;
+        List<Packages> allPackage = packageDao.getTheAllPackage();
+        int pid = 1;
         for(Packages p:allPackage){
-            ids.add(p.getPid());
-        }
-        for(int i=1;i<=ids.size();i++){
-            if(!ids.contains(i)){
-                pid = i;
-                break;
-            }else if(i==ids.size()){
-                pid = i+1;
+            if(pid==p.getPid()){
+                pid++;
+            }else{
                 break;
             }
         }
@@ -81,11 +75,20 @@ public class ArticleController {
         return "修改成功！";
     }
 
-    @ResponseBody
+//    @ResponseBody
     @RequestMapping("/deletePackage")
-    public String deletePackage(@RequestParam("pid") int pid,
+    public String deletePackage(@RequestParam("uid") int uid,
+                                @RequestParam("pid") int pid,
                                 @RequestParam("deleteArticles") boolean deleteArticles){
         List<Article> articles = articleDao.getAllArticlesByPid(pid);
+        List<Packages> packages = packageDao.getAllPackage(uid);
+        int pid_default = 0;
+        for(Packages p:packages){
+            if(p.getPname().equals("默认包")){
+                pid_default= p.getPid();
+            }
+        }
+
         if(deleteArticles){
             for(Article article:articles){
                 articleDao.deleteArticleByAid(article.getAid());
@@ -93,12 +96,12 @@ public class ArticleController {
             packageDao.deletePackage(pid);
         }else {
             for(Article article:articles){
-                article.setPid(1);
+                article.setPid(pid_default);
                 articleDao.updateArticle(article);
             }
             packageDao.deletePackage(pid);
         }
-        return "删除成功！";
+        return "redirect:/toPManage_1?uid="+uid+"&&pagenumb=0";
     }
 
     @RequestMapping("/search")
