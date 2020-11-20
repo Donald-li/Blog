@@ -7,6 +7,9 @@ import java.util.List;
 
 @Mapper
 public interface PackageDao {
+    @Select("select * from package")
+    List<Packages> getTheAllPackage();
+
     @Select("select * from package where uid = #{uid}")
     List<Packages> getAllPackage(int uid);
 

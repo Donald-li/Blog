@@ -42,11 +42,6 @@ class MyblogApplicationTests {
     }
 
     @Test
-    public void daoInsertTest(){
-        User user = new User("test1","123");
-//        usersDao.insertUser(user);
-    }
-    @Test
     public void articletest(){
         List<Article> articles = articleDao.getAllArticles();
         for(Article article:articles){

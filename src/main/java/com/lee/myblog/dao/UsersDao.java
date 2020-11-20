@@ -18,6 +18,6 @@ public interface UsersDao {
     @Select("select * from myblog_user where uname = #{uname}")
     public User getUserByUname(String uname);
 
-    @Insert("insert into myblog_user(uname,password) values(#{uname},#{password})")
-    public void insertUser(String uname,String password);
+    @Insert("insert into myblog_user(uid,uname,password) values(#{uid},#{uname},#{password})")
+    public void insertUser(int uid,String uname,String password);
 }

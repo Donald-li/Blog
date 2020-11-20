@@ -14,15 +14,15 @@
         <div id="list" style="width: 100%;margin-top: 5px">
 <!--            包导航-->
             <div class="list-group" style="float: left;width: 20%">
-                <a th:classappend="${p.pid == pid}? active" th:href="@{/toPManage(uid=${session.uid},pid = ${p.pid},pagenumb = 0)}" th:text="${p.pname}+' PID：'+${p.pid}" th:each="p:${packages}" type="button" class="list-group-item list-group-item-action">
+                <a th:classappend="${p.pid == pid}? active" th:href="@{/toPManage(uid=${session.uid},pid = ${p.pid},pagenumb = 0)}" th:text="${p.pname}" th:each="p:${packages}" type="button" class="list-group-item list-group-item-action">
                     Cras justo odio
                 </a>
                 <a class="list-group-item list-group-item-action" th:onclick="'addPackage('+${session.uid}+')'">添加新的包</a>
             </div>
-            <button id="pediter" th:onclick="'updatePackage('+${pid}+')'" th:if="${pid != 1}" class="btn badge-primary" style="margin-left: 10px">
+            <button id="pediter" th:onclick="'updatePackage('+${pid}+')'" th:if="${!pname.equals('默认包')}" class="btn badge-primary" style="margin-left: 10px">
                 编辑包
             </button>
-            <button id="pdelete" th:onclick="'deletePackage('+${pid}+')'" th:if="${pid != 1}" class="btn badge-danger">
+            <button id="pdelete" th:onclick="'deletePackage('+${pid}+','+${session.uid}+')'" th:if="${!pname.equals('默认包')}" class="btn badge-danger">
                 删除包
             </button>
             <div style="float: right;width: 78%;margin-left: 5px">
@@ -131,34 +131,38 @@
         }
     }
 
-    function deletePackage(pid) {
+    function deletePackage(pid,uid) {
         if(window.confirm("你确定要删除这个包吗？")){
             if(window.confirm("是否一起删除包内的所有文章？否则此包内的文章将默认转移到默认包下！")){
-                $.ajax({
-                    url:"/AManage/deletePackage",
-                    type:"get",
-                    data:{"pid":pid,
-                          "deleteArticles":true},
-                    success:function () {
-                        location.reload(true);
-                    },
-                    error:function () {
-
-                    }
-                })
+                location.href="/AManage/deletePackage?pid="+pid+"&&deleteArticles="+true+"&&uid="+uid
+                // $.ajax({
+                //     url:"/AManage/deletePackage",
+                //     type:"get",
+                //     data:{"pid":pid,
+                //           "deleteArticles":true},
+                //     success:function (e) {
+                //         // location.reload(true);
+                //         window.alert(e)
+                //     },
+                //     error:function () {
+                //
+                //     }
+                // })
             }else {
-                $.ajax({
-                    url:"/AManage/deletePackage",
-                    type:"get",
-                    data:{"pid":pid,
-                        "deleteArticles":false},
-                    success:function () {
-                        location.reload(true);
-                    },
-                    error:function () {
-
-                    }
-                })
+                location.href="/AManage/deletePackage?pid="+pid+"&&deleteArticles="+false+"&&uid="+uid
+                // $.ajax({
+                //     url:"/AManage/deletePackage",
+                //     type:"get",
+                //     data:{"pid":pid,
+                //         "deleteArticles":false},
+                //     success:function (e) {
+                //         // location.reload(true);
+                //         window.alert(e)
+                //     },
+                //     error:function () {
+                //
+                //     }
+                // })
             }
         }
     }

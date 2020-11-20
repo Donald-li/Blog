@@ -9,7 +9,8 @@ public class User {
     public User() {
     }
 
-    public User(String uname, String password) {
+    public User(int uid, String uname, String password) {
+        this.uid = uid;
         this.uname = uname;
         this.password = password;
     }
