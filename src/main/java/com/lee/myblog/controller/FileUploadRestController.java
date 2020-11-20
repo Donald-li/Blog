@@ -36,6 +36,7 @@ public class FileUploadRestController {
 
     @GetMapping("/getText")
     public String getText(@RequestParam("pid") int pid,
+                          @RequestParam("uid") int uid,
                           @RequestParam("text") String text,
                           @RequestParam("title") String title,
                           @RequestParam("info") String info){
@@ -70,7 +71,7 @@ public class FileUploadRestController {
                     break;
                 }
             }
-            article = new Article(aid,pid,1,text,day,title,info);
+            article = new Article(aid,pid,uid,text,day,title,info);
             articleDao.insertArticle(article);
             return "保存成功";
         }

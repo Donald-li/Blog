@@ -15,7 +15,7 @@
         <div th:insert="BlogType::blogNav"></div>
 
         <div style="height: auto">
-            <button id="getter" class="btn btn-info">保存</button><label id="msg" class="text-info"></label>
+            <button id="getter" th:onclick="'getter('+${session.uid}+')'" class="btn btn-info">保存</button><label id="msg" class="text-info"></label>
             <form id="uploadImageForm" method="POST" enctype="multipart/form-data" action="/" style="width: 100%" >
                 <table style="width: 100%;margin-top: 5px">
                     <tr>
@@ -93,11 +93,12 @@
     });
 
     //保存按钮获取完成的markdown文本
-    $("#getter").click(function() {
+ function getter(uid) {
         $.ajax({
             url:"/api/getText",
             type:"get",
-            data:{"pid":$("#inputGroupSelect01 option:selected").val(),
+            data:{"uid":uid,
+                  "pid":$("#inputGroupSelect01 option:selected").val(),
                   "text":$("#content").val(),
                   "title":$("#title").val(),
                   "info":$("#info").val()
@@ -109,7 +110,7 @@
                 
             }
         });
-    });
+    };
 
     function run() {
         var text = $('#content').val(),

@@ -44,7 +44,7 @@
 
     <div class="nav-scroller py-1 mb-2" th:fragment="blogNav">
         <nav class="nav d-flex justify-content-between">
-            <a  class="p-2 text-muted menulist" href="#" th:href="@{/mark2}">新建文章</a>
+            <a  class="p-2 text-muted menulist" href="#" th:href="@{/mark2(uid = ${session.uid})}">新建文章</a>
             <a class="p-2 text-muted" href="#" th:href="@{/toAlist(uid = ${session.uid},pid = 1,pagenumb = 0)}">文章浏览列表</a>
             <a class="p-2 text-muted" href="#" th:href="@{/toPManage(uid = ${session.uid},pid = 1,pagenumb = 0)}">包及文章管理</a>
 <!--            <a class="p-2 text-muted" href="#">设计成果（未开放）</a>-->

@@ -47,7 +47,7 @@
                             <td th:text="${articel.info}">test11</td>
                             <td th:text="${#dates.format(articel.date,'YYYY年MM月dd日 HH:mm:ss')}">ddddYYYYZZZZSSSS</td>
                             <td>
-                                <a id="managebtn" class="btn btn-primary" th:href="@{/toUpdate(aid = ${articel.aid})}">编辑</a>
+                                <a id="managebtn" class="btn btn-primary" th:href="@{/toUpdate(uid = ${session.uid},aid = ${articel.aid})}">编辑</a>
                                 <button id="deletebtn" class="btn badge-danger" th:onclick="'deletebtn('+${articel.aid}+','+${articel.pid}+')'">删除</button>
                             </td>
                         </tr>

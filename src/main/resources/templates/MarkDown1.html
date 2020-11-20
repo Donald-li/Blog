@@ -15,7 +15,7 @@
         <div th:insert="BlogType::blogNav"></div>
 
         <div style="height: auto">
-            <button id="getter" class="btn btn-info" th:onclick="'getText('+${initArticle.aid}+','+1+','+${initArticle.pid}+')'">修改</button><label id="msg" class="text-info"></label>
+            <button id="getter" class="btn btn-info" th:onclick="'getText('+${initArticle.aid}+','+${session.uid}+','+${initArticle.pid}+')'">修改</button><label id="msg" class="text-info"></label>
             <form id="uploadImageForm" method="POST" enctype="multipart/form-data" action="/" style="width: 100%" >
                 <table style="width: 100%;margin-top: 5px">
                     <tr>

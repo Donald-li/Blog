@@ -32,8 +32,9 @@ public class MainPageController {
 
     //新建文章页面导航
     @RequestMapping("/mark2")
-    public String tomark2(Model model){
-        List<Packages> packages = packageDao.getAllPackage();
+    public String tomark2(@RequestParam("uid")int uid,
+                          Model model){
+        List<Packages> packages = packageDao.getAllPackage(uid);
         model.addAttribute("packages",packages);
         return "MarkDown2";
     }
@@ -52,7 +53,7 @@ public class MainPageController {
                             @RequestParam("pagenumb") int pagenumb,
                             @RequestParam("uid") int uid,
                             Model model) {
-        List<Packages> packages = packageDao.getAllPackage();
+        List<Packages> packages = packageDao.getAllPackage(uid);
         String pname = packageDao.getPackageById(pid).getPname();
         List<Article> articles = articleDao.getArticlesByPageAndPid(uid,pid,pagenumb*6,6);
         List<Article> list = articleDao.getAllArticlesByPid(pid);
@@ -74,8 +75,9 @@ public class MainPageController {
     //文章编辑页面导航
     @RequestMapping("/toUpdate")
     public String toUpdate(@RequestParam("aid") int aid,
+                           @RequestParam("uid") int uid,
                            Model model){
-        List<Packages> allPackage = packageDao.getAllPackage();
+        List<Packages> allPackage = packageDao.getAllPackage(uid);
         Article article = articleDao.getArticleByAid(aid);
         model.addAttribute("initArticle",article);
         model.addAttribute("packages",allPackage);
@@ -89,7 +91,7 @@ public class MainPageController {
                                    @RequestParam("uid") int uid,
                                    Model model){
         Map<String,Integer> map = new HashMap<>();
-        List<Packages> allPackage = packageDao.getAllPackage();
+        List<Packages> allPackage = packageDao.getAllPackage(uid);
         int maxpage = 0;
         //用来储存所有包的大小
         for (Packages p:allPackage) {

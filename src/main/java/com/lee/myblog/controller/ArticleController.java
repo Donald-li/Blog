@@ -35,7 +35,7 @@ public class ArticleController {
     public String addPackage(@RequestParam("pname") String pname,
                              @RequestParam("uid") int uid){
         //以下实现动态添加pid
-        List<Packages> allPackage = packageDao.getAllPackage();
+        List<Packages> allPackage = packageDao.getAllPackage(uid);
         List<Integer> ids = new ArrayList<>();
         int pid = 0;
         for(Packages p:allPackage){
