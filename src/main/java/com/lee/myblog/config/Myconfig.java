@@ -24,7 +24,7 @@ public class Myconfig implements WebMvcConfigurer {
                         "/static/**",
                         "/img/**",
                         "/toRegister",
-                        "/uname_AJAX"
+                        "/Register"
                 );
     }
 
