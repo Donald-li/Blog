@@ -19,6 +19,7 @@
                 </a>
                 <a class="list-group-item list-group-item-action" th:onclick="'addPackage('+${session.uid}+')'">添加新的包</a>
             </div>
+
             <button id="pediter" th:onclick="'updatePackage('+${pid}+')'" th:if="${!pname.equals('默认包')}" class="btn badge-primary" style="margin-left: 10px">
                 编辑包
             </button>
