@@ -49,7 +49,7 @@ public class LoginController {
                            @RequestParam("password")String password,
                            Model model){
         if(usersDao.getUserByUname(uname)==null) {
-            model.addAttribute("info",1);
+            model.addAttribute("info",0);
             List<Packages> allPackages = packageDao.getTheAllPackage();
             List<User> users = usersDao.getAllUsers();
             int pid = 1;

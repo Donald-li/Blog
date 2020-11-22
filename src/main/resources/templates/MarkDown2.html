@@ -62,29 +62,31 @@
             contentType:false,
             success:function (data) {
                 // 生成图片网址
-                var dataArray = data.split('/');
+                var dataArray = data.split('/');//用于获取图片名
                 var picName = dataArray[dataArray.length - 1];
-                var picURL = '![' + picName + '](' + data + ')';
+                var picURL = '![' + picName + '](' + data + ')';//markdown形式的图片url
+                //h5格式的图片格式
                 var imgURL = '<center>\n' +
                     '<img src="'+data+'" width="80%" height="80%" />\n' +
                     '</center>';
 
-                // 插入到内容焦点中
+                // 插入到内容焦点中(在光标处插入文本)
                 var text = $('#content').val();
-                var foucsStart = document.getElementById('content').selectionStart;
+                var foucsStart = document.getElementById('content').selectionStart;//此方法实现
                 var len = text.length;
 
                 var subStr = '';
                 if (foucsStart == len)
                     text += '\n\n' + imgURL + '\n\n';
                 else {
+                    //截取从焦点处开始,第一个字符
                     subStr = text.substr(foucsStart, 1);
                     text = text.replace(subStr, '\n\n' + imgURL + '\n\n' + subStr);
                     console.log(text);
                 }
 
                 $('#content').val(text);
-                run(); // 手动触发 markdown 文字转换
+                run(); // 手动触发 markdown 文字转换--shutdown
             },
             error:function (e) {
 
