@@ -1,0 +1,63 @@
+
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="Mark Otto, Jacob Thornton, and Bootstrap contributors">
+    <meta name="generator" content="Jekyll v4.0.1">
+    <title>Blog Template · Bootstrap</title>
+
+    <link rel="canonical" href="https://v4.bootcss.com/docs/examples/blog/">
+
+    <!-- Bootstrap core CSS -->
+    <link href="../static/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
+    <meta name="theme-color" content="#563d7c">
+
+    <!-- Custom styles for this template -->
+    <link href="https://fonts.googleapis.com/css?family=Playfair+Display:700,900" rel="stylesheet">
+    <!-- Custom styles for this template -->
+    <link href="../static/css/blog.css" rel="stylesheet">
+</head>
+<body>
+<div class="container">
+    <header class="blog-header py-3" th:fragment="blogHead">
+        <div class="row flex-nowrap justify-content-between align-items-center">
+<!--            <div class="col-4 pt-1">-->
+<!--                <a class="text-muted" href="#">Subscribe</a>-->
+<!--            </div>-->
+            <div class="col-4 text-center">
+                <a class="blog-header-logo text-dark" href="#">文章发布</a>
+            </div>
+            <div class="justify-content-end align-items-center" style="width: 40%;margin-right: 10px">
+                <form style="background-color: snow" action="/AManage/search">
+                    <input style="float: left;width: 80%;padding: 0" name="searchtext" type="text" class="form-control"  />
+                    <button style="float: right;width: 20%;font-size: 100%" class="btn btn-primary" type="submit" th:action="@{/AManage/search}">
+                        搜索
+                    </button>
+                </form>
+                <label style="width: 200px;margin-top: 10px" class="text-info" th:text="'欢迎,'+${session.uname}+'!'">欢迎,李自家!</label>
+            </div>
+        </div>
+    </header>
+
+    <div class="nav-scroller py-1 mb-2" th:fragment="blogNav">
+        <nav class="nav d-flex justify-content-between">
+            <a  class="p-2 text-muted menulist" href="#" th:href="@{/mark2(uid = ${session.uid})}">新建文章</a>
+            <a class="p-2 text-muted" href="#" th:href="@{/toAlist_1(uid = ${session.uid},pagenumb = 0)}">文章浏览列表</a>
+            <a class="p-2 text-muted" href="#" th:href="@{/toPManage_1(uid = ${session.uid},pagenumb = 0)}">包及文章管理</a>
+<!--            <a class="p-2 text-muted" href="#">设计成果（未开放）</a>-->
+<!--&lt;!&ndash;            <a class="p-2 text-muted" href="#">笔记</a>&ndash;&gt;-->
+<!--            <a class="p-2 text-muted" href="#">日记及记录（未开放）</a>-->
+        </nav>
+    </div>
+</div>
+<footer class="blog-footer container" th:fragment="blogFoot">
+    <p><a href="http://www.beian.miit.gov.cn/">鲁ICP备20028894号.    </a></p>
+    <p>
+        <a href="#">回到顶部</a>
+    </p>
+</footer>
+</body>
+</html>

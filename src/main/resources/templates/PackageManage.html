@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>包管理页面</title>
+    <link rel="stylesheet" href="../static/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="../static/css/blog.css" />
+    <script type="text/javascript" src="../static/js/jquery-3.3.1.min.js"></script>
+</head>
+<body>
+    <div class="container" id="container">
+        <div th:insert="BlogType::blogHead"></div>
+        <div th:insert="BlogType::blogNav"></div>
+        <div id="list" style="width: 100%;margin-top: 5px">
+<!--            包导航-->
+            <div class="list-group" style="float: left;width: 20%">
+                <a th:classappend="${p.pid == pid}? active" th:href="@{/toPManage(uid=${session.uid},pid = ${p.pid},pagenumb = 0)}" th:text="${p.pname}" th:each="p:${packages}" type="button" class="list-group-item list-group-item-action">
+                    Cras justo odio
+                </a>
+                <a class="list-group-item list-group-item-action" th:onclick="'addPackage('+${session.uid}+')'">添加新的包</a>
+            </div>
+            <button id="pediter" th:onclick="'updatePackage('+${pid}+')'" th:if="${!pname.equals('默认包')}" class="btn badge-primary" style="margin-left: 10px">
+                编辑包
+            </button>
+            <button id="pdelete" th:onclick="'deletePackage('+${pid}+','+${session.uid}+')'" th:if="${!pname.equals('默认包')}" class="btn badge-danger">
+                删除包
+            </button>
+            <div style="float: right;width: 78%;margin-left: 5px">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>文章ID</th>
+                            <th>所属包ID</th>
+                            <th>作者ID</th>
+                            <th>标题</th>
+                            <th>简介</th>
+                            <th>日期</th>
+                            <th>操作</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr th:each="articel:${articles}" th:id="tr+${articel.aid}">
+                            <th scope="row" th:text="${articel.aid}">1</th>
+                            <td th:text="${articel.pid}">1</td>
+                            <td th:text="${articel.uid}">1</td>
+                            <td th:text="${articel.title}">test1</td>
+                            <td th:text="${articel.info}">test11</td>
+                            <td th:text="${#dates.format(articel.date,'YYYY年MM月dd日 HH:mm:ss')}">ddddYYYYZZZZSSSS</td>
+                            <td>
+                                <a id="managebtn" class="btn btn-primary" th:href="@{/toUpdate(uid = ${session.uid},aid = ${articel.aid})}">编辑</a>
+                                <button id="deletebtn" class="btn badge-danger" th:onclick="'deletebtn('+${articel.aid}+','+${articel.pid}+')'">删除</button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td colspan="7">
+                                <!--            分页器-->
+                                <nav aria-label="...">
+                                    <ul class="pagination">
+                                        <li class="page-item" th:class="${nowpage== 0?'page-item  disabled':'page-item'}" >
+                                            <a class="page-link" th:href="@{/toPManage(uid=${session.uid},pid = ${pid},pagenumb = ${nowpage}-1)}">上一页</a>
+                                        </li>
+                                        <li class="page-item" aria-current="page" th:each="i:${#numbers.sequence(1, maxpage)}" th:class="${nowpage+1 == i?'page-item active':'page-item'}" >
+                                            <a class="page-link" href="#" th:href="@{/toPManage(uid=${session.uid},pid = ${pid},pagenumb = ${i}-1)}" th:text="${i}"></a>
+                                        </li>
+                                        <li class="page-item" th:class="${nowpage+1 == maxpage ?'page-item  disabled':'page-item'}">
+                                            <a class="page-link" th:href="@{/toPManage(uid=${session.uid},pid = ${pid},pagenumb = ${nowpage}+1)}">下一页</a>
+                                        </li>
+                                    </ul>
+                                </nav>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+        </div>
+
+    </div>
+    <div th:insert="BlogType::blogFoot"></div>
+</body>
+<script>
+    function deletebtn(aid,pid) {
+        if(window.confirm("你确定要删除吗？")){
+            $.ajax({
+                url:"/AManage/deleteArticleById",
+                type:"post",
+                data:{"aid":aid,"pid":pid},
+                success:function (data) {
+                    location.reload(true);
+                },
+                error:function () {
+
+                }
+
+            })
+        }
+    }
+
+    function addPackage(uid) {
+       var pname = window.prompt("请输入新添加的包名");
+       if(pname.length !== 0){
+           $.ajax({
+               url:"/AManage/addpackage",
+               type:"get",
+               data:{"pname":pname,"uid":uid},
+               success:function () {
+                   location.reload(true);
+               },
+               error:function () {
+
+               }
+           })
+       }
+    }
+
+    function updatePackage(pid) {
+        var pname = window.prompt("请输入想要修改的包名");
+        if(pname.length !== 0){
+            $.ajax({
+                url:"/AManage/updatePackage",
+                type:"get",
+                data:{"pid":pid,
+                      "pname":pname},
+                success:function () {
+                    location.reload(true);
+                },
+                error:function () {
+
+                }
+            })
+        }
+    }
+
+    function deletePackage(pid,uid) {
+        if(window.confirm("你确定要删除这个包吗？")){
+            if(window.confirm("是否一起删除包内的所有文章？否则此包内的文章将默认转移到默认包下！")){
+                location.href="/AManage/deletePackage?pid="+pid+"&&deleteArticles="+true+"&&uid="+uid
+                // $.ajax({
+                //     url:"/AManage/deletePackage",
+                //     type:"get",
+                //     data:{"pid":pid,
+                //           "deleteArticles":true},
+                //     success:function (e) {
+                //         // location.reload(true);
+                //         window.alert(e)
+                //     },
+                //     error:function () {
+                //
+                //     }
+                // })
+            }else {
+                location.href="/AManage/deletePackage?pid="+pid+"&&deleteArticles="+false+"&&uid="+uid
+                // $.ajax({
+                //     url:"/AManage/deletePackage",
+                //     type:"get",
+                //     data:{"pid":pid,
+                //         "deleteArticles":false},
+                //     success:function (e) {
+                //         // location.reload(true);
+                //         window.alert(e)
+                //     },
+                //     error:function () {
+                //
+                //     }
+                // })
+            }
+        }
+    }
+</script>
+
+</html>
